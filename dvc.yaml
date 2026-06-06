@@ -1,0 +1,17 @@
+stages:
+  ingest-data:
+    cmd: python scripts/prepare_data.py
+    outs:
+      - data/tool-selection/tool_selection_dataset
+
+  train:
+    cmd: python scripts/train.py
+    deps:
+      - src
+      - data/tool-selection/tool_selection_dataset
+      - scripts/train.py
+    params:
+      - model
+      - training
+    outs:
+      - models

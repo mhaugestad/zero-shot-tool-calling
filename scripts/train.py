@@ -7,10 +7,10 @@ from pytorch_lightning.callbacks import (
     ModelCheckpoint,
 )
 
-from datamodule import ToolSelectionDataModule
-from module import ToolSelectionModule
-from model import GLiClassModel
-from config import DataConfig
+from src.datamodule import ToolSelectionDataModule
+from src.module import ToolSelectionModule
+from src.model import GLiClassModel
+from src.config import DataConfig, ExperimentConfig
 
 
 def load_params() -> dict:
@@ -46,10 +46,11 @@ def build_dataconfig(
 
 def main():
 
-    params = load_params()
+    raw = load_params()
+    params = ExperimentConfig.model_validate(raw)
 
     data_config = build_dataconfig(
-        params
+        params.model_dump()
     )
 
     #
@@ -67,9 +68,7 @@ def main():
     #
 
     model = GLiClassModel(
-        pretrained_model_name=params["model"][
-            "pretrained_model_name"
-        ],
+        pretrained_model_name=params.model.pretrained_model_name,
         vocab_size=len(
             datamodule.tokenizer
         ),
@@ -81,9 +80,7 @@ def main():
 
     module = ToolSelectionModule(
         model=model,
-        learning_rate=params["training"][
-            "learning_rate"
-        ],
+        learning_rate=params.training.learning_rate,
     )
 
     #
@@ -112,9 +109,7 @@ def main():
     #
 
     trainer = pl.Trainer(
-        max_epochs=params["training"][
-            "max_epochs"
-        ],
+        max_epochs=params.training.max_epochs,
         callbacks=[
             checkpoint_callback
         ],

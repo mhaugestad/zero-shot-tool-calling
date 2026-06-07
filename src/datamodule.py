@@ -72,6 +72,18 @@ class ToolSelectionDataModule(
             self.config.dataset_path
         )
 
+        dataset = dataset.map(
+                preprocessor,
+                batched=False,
+            )
+        
+        dataset = dataset.filter(
+            lambda ex: (
+                len(ex["tool_names"])
+                == sum(ex["tool_token_mask"])
+            )
+        )
+
         self.train_dataset = dataset["train"].map(
             preprocessor,
             batched=False,

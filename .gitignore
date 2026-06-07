@@ -1,2 +1,6 @@
 data/
 notebooks
+lightning_logs
+*.pyc
+__pycache__/
+*.ipynb_checkpoints

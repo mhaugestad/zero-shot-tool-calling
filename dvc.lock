@@ -1,0 +1,10 @@
+schema: '2.0'
+stages:
+  ingest-data:
+    cmd: python scripts/prepare_data.py
+    outs:
+    - path: data/tool-selection/tool_selection_dataset
+      hash: md5
+      md5: 4bdf5a5c18c900f6a15dcdef4593a34a.dir
+      size: 27265360
+      nfiles: 10

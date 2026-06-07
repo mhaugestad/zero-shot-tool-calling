@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from pydantic import BaseModel
 
 @dataclass
 class DataConfig:
@@ -14,3 +14,20 @@ class DataConfig:
     num_workers: int = 4
 
     tool_token: str = "[TOOL]"
+
+
+class ModelConfig(BaseModel):
+    pretrained_model_name: str
+    max_length: int = 512
+
+
+class TrainingConfig(BaseModel):
+    learning_rate: float
+    batch_size: int
+    max_epochs: int
+    num_workers: int = 4
+
+
+class ExperimentConfig(BaseModel):
+    model: ModelConfig
+    training: TrainingConfig

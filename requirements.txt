@@ -1,3 +1,6 @@
-gliner2[local]
 datasets
 torchmetrics
+dvc
+pytorch-lightning
+torch
+transformers

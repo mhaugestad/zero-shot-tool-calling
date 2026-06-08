@@ -1,16 +1,26 @@
-from typing import Any
+from typing import Any, List
 
 from transformers import PreTrainedTokenizerBase
+from src.domain import Message, MessageRole, Tool, ToolSelectionExample
 
 
 class GLiClassPreprocessor:
+
+    ROLE_TO_TOKEN = {
+        MessageRole.SYSTEM: "[SYSTEM]",
+        MessageRole.USER: "[USER]",
+        MessageRole.ASSISTANT: "[ASSISTANT]",
+    }
 
     def __init__(
         self,
         tokenizer: PreTrainedTokenizerBase,
         max_length: int,
         tool_token: str = "[TOOL]",
-    ) -> None:
+        system_token: str = "[SYSTEM]",
+        user_token: str = "[USER]",
+        assistant_token: str = "[ASSISTANT]",
+    ):
 
         self.tokenizer = tokenizer
         self.max_length = max_length
@@ -20,14 +30,22 @@ class GLiClassPreprocessor:
             tool_token
         )
 
+        self.system_token = system_token
+        self.user_token = user_token
+        self.assistant_token = assistant_token
+
     def __call__(
         self,
         example: dict[str, Any],
     ) -> dict[str, Any]:
 
+        example = ToolSelectionExample.model_validate(
+            example
+        )
+
         serialized = self.serialize(
-            query=example["query"],
-            tools=example["tools"],
+            messages=example.messages,
+            tools=example.tools,
         )
 
         tokenized = self.tokenize(
@@ -35,34 +53,55 @@ class GLiClassPreprocessor:
         )
 
         labels = self.build_labels(
-            tools=example["tools"],
-            answers=example["answer"],
+            tools=example.tools,
+            answers=example.answer,
         )
 
         return {
             **tokenized,
             "labels": labels,
             "tool_names": [
-                tool["name"]
-                for tool in example["tools"]
+                tool.name
+                for tool in example.tools
             ],
         }
 
     def serialize(
         self,
-        query: str,
-        tools: list[dict[str, Any]],
+        messages: list[Message],
+        tools: list[Tool],
     ) -> str:
 
-        parts = [query]
+        parts = []
+
+        #
+        # Conversation
+        #
+
+        for message in messages:
+
+            role = message["role"]
+
+            role_token = self.ROLE_TO_TOKEN[
+                    message.role
+                ]
+
+            parts.append(
+                f"{role_token}\n"
+                f"{message.content}"
+            )
+
+        #
+        # Candidate tools
+        #
 
         for tool in tools:
 
             parts.append(
                 (
-                    f"{self.tool_token} "
-                    f"{tool['name']}\n"
-                    f"{tool['description']}"
+                    f"{self.tool_token}\n"
+                    f"{tool.name}\n"
+                    f"{tool.description}"
                 )
             )
 
@@ -95,13 +134,13 @@ class GLiClassPreprocessor:
 
     def build_labels(
         self,
-        tools: list[dict[str, Any]],
+        tools: list[Tool],
         answers: list[str],
     ) -> list[float]:
 
         answer_set = set(answers)
 
         return [
-            float(tool["name"] in answer_set)
+            float(tool.name in answer_set)
             for tool in tools
         ]

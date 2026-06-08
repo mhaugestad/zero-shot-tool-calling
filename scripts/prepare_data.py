@@ -4,6 +4,7 @@ from collections import Counter
 import json
 from pydantic import BaseModel
 from typing import List
+from src.domain import Message, Tool, ToolSelectionExample, MessageRole
 
 ds = load_dataset("Salesforce/xlam-function-calling-60k")
 
@@ -23,7 +24,7 @@ class Tool(BaseModel):
 class ToolWithParameters(Tool):
     parameters: dict
 
-class Example(BaseModel):
+class FunctionCallingExample(BaseModel):
     id: int
     query: str
     answers: List[Answer]
@@ -31,30 +32,54 @@ class Example(BaseModel):
 
 class ClassificationExample(BaseModel):
     id: int
-    query: str
+    messages: List[Message]
     answer: List[str]
     tools: List[Tool]
+
 
 def _parse_row(row):
     id: int = row["id"]
     query: str = row["query"]
     answers: List[Answer] = [Answer.model_validate(answer) for answer in json.loads(row["answers"])]
     tools: List[ToolWithParameters] = [ToolWithParameters.model_validate(tool) for tool in json.loads(row["tools"])]
-    return Example(id=id, query=query, answers=answers, tools=tools)
+    return FunctionCallingExample(id=id, query=query, answers=answers, tools=tools)
 
 rows = []
 for row in train_ds:
     example = _parse_row(row)
     classification_example = ClassificationExample(
         id=example.id,
-        query=example.query,
-        answer=list(set([answer.name for answer in example.answers])),
-        tools=list(set([Tool(**tool.model_dump()) for tool in example.tools]))
+        messages=[
+            Message(
+                role=MessageRole.USER,
+                content=example.query,
+            )
+        ],
+        answer=list(
+            set(
+                answer.name
+                for answer in example.answers
+            )
+        ),
+        tools=list(
+            set(
+                Tool(
+                    **tool.model_dump()
+                )
+                for tool in example.tools
+            )
+        ),
     )
-    rows.append(classification_example)
+    rows.append(
+        classification_example.model_dump(
+            mode="json"
+        )
+    )
 
 
-new_ds = datasets.Dataset.from_list([classification_example.model_dump() for classification_example in rows])
+new_ds = datasets.Dataset.from_list(
+    rows
+)
 
 train_testdev = new_ds.train_test_split(test_size=0.2, seed=42)
 
@@ -67,3 +92,7 @@ final_dataset = datasets.DatasetDict({
 })
 
 final_dataset.save_to_disk("data/tool-selection/tool_selection_dataset")
+
+print(
+    final_dataset["train"][0]
+)

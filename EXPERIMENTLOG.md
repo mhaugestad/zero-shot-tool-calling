@@ -104,7 +104,7 @@ Reuse of tool descriptions as semantic supervision
 
 
 
-# EXP-0002
+# EXP-0002 : prosy-shah
 
 Goal:
 Migrate from query-based inputs to conversation-based inputs.
@@ -118,3 +118,13 @@ Changes:
 
 Expected outcome:
 Equivalent performance to EXP-0001 because each example currently contains a single USER message.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│     test_exact_match      │    0.9815000295639038     │
+│          test_f1          │    0.9917077422142029     │
+│         test_loss         │    0.02932005561888218    │
+│      test_precision       │    0.9882634878158569     │
+│        test_recall        │    0.9951760768890381     │
+└───────────────────────────┴───────────────────────────┘

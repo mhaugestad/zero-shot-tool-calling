@@ -4,5 +4,5 @@ pytorch-lightning
 torch
 transformers
 dvc
-dvc[gdrive]
 dvclive
+huggingface_hub

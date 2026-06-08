@@ -10,7 +10,7 @@ This file tracks model architectures, training configurations, and experiment ou
 
 ---
 
-## EXP-0001 — GLiClass-style Dynamic Tool Selection Baseline
+## EXP-0001 — GLiClass-style Dynamic Tool Selection Baseline: 4236122 [outer-corm]
 
 ### Date
 
@@ -89,3 +89,14 @@ Reuse of tool descriptions as semantic supervision
 - Recall
 - F1
 - Exact Match
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│     test_exact_match      │    0.9821666479110718     │
+│          test_f1          │     0.991936445236206     │
+│         test_loss         │   0.024189338088035583    │
+│      test_precision       │    0.9899111390113831     │
+│        test_recall        │    0.9939700961112976     │
+└───────────────────────────┴───────────────────────────┘
+## Results:

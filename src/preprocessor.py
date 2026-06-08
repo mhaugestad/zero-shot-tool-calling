@@ -26,13 +26,15 @@ class GLiClassPreprocessor:
         self.max_length = max_length
 
         self.tool_token = tool_token
-        self.tool_token_id = tokenizer.convert_tokens_to_ids(
-            tool_token
-        )
-
         self.system_token = system_token
         self.user_token = user_token
         self.assistant_token = assistant_token
+
+
+        self.tool_token_id = tokenizer.convert_tokens_to_ids(
+            tool_token
+        )
+        
 
     def __call__(
         self,
@@ -80,7 +82,7 @@ class GLiClassPreprocessor:
 
         for message in messages:
 
-            role = message["role"]
+            role = message.role
 
             role_token = self.ROLE_TO_TOKEN[
                     message.role

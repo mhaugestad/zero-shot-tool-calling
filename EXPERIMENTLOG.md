@@ -90,6 +90,8 @@ Reuse of tool descriptions as semantic supervision
 - F1
 - Exact Match
 
+## Results:
+
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
@@ -99,4 +101,20 @@ Reuse of tool descriptions as semantic supervision
 │      test_precision       │    0.9899111390113831     │
 │        test_recall        │    0.9939700961112976     │
 └───────────────────────────┴───────────────────────────┘
-## Results:
+
+
+
+# EXP-0002
+
+Goal:
+Migrate from query-based inputs to conversation-based inputs.
+
+Changes:
+- Introduced Message domain object.
+- Introduced MessageRole enum.
+- Replaced query field with messages field.
+- Added [SYSTEM], [USER], [ASSISTANT] special tokens.
+- Updated GLiClass preprocessor to serialize conversations.
+
+Expected outcome:
+Equivalent performance to EXP-0001 because each example currently contains a single USER message.

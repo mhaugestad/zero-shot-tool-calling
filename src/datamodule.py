@@ -49,7 +49,10 @@ class ToolSelectionDataModule(
         self.tokenizer.add_special_tokens(
             {
                 "additional_special_tokens": [
-                    self.config.tool_token
+                    self.config.tool_token,
+                    self.config.system_token,
+                    self.config.user_token,
+                    self.config.assistant_token,
                 ]
             }
         )

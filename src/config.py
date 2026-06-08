@@ -14,6 +14,9 @@ class DataConfig:
     num_workers: int = 4
 
     tool_token: str = "[TOOL]"
+    system_token: str = "[SYSTEM]"
+    user_token: str = "[USER]"
+    assistant_token: str = "[ASSISTANT]"
 
 
 class ModelConfig(BaseModel):

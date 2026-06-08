@@ -10,6 +10,7 @@ from torchmetrics.classification import (
     BinaryRecall,
     BinaryF1Score,
 )
+from src.metrics import ExactMatch
 
 
 class ToolSelectionModule(pl.LightningModule):
@@ -21,6 +22,9 @@ class ToolSelectionModule(pl.LightningModule):
     ) -> None:
 
         super().__init__()
+        self.save_hyperparameters(
+                ignore=["model"]
+            )
 
         self.model = model
         self.learning_rate = learning_rate
@@ -28,10 +32,12 @@ class ToolSelectionModule(pl.LightningModule):
         self.val_precision = BinaryPrecision()
         self.val_recall = BinaryRecall()
         self.val_f1 = BinaryF1Score()
+        self.val_exact_match = ExactMatch()
 
         self.test_precision = BinaryPrecision()
         self.test_recall = BinaryRecall()
         self.test_f1 = BinaryF1Score()
+        self.test_exact_match = ExactMatch()
 
     def forward(
         self,
@@ -134,6 +140,12 @@ class ToolSelectionModule(pl.LightningModule):
             labels.int(),
         )
 
+        self.val_exact_match.update(
+            logits=output.logits,
+            labels=batch["labels"],
+            label_mask=batch["label_mask"],
+        )
+
         return loss
 
     def test_step(
@@ -183,6 +195,12 @@ class ToolSelectionModule(pl.LightningModule):
             labels.int(),
         )
 
+        self.test_exact_match.update(
+            logits=output.logits,
+            labels=batch["labels"],
+            label_mask=batch["label_mask"],
+        )
+
         return loss
 
     def on_validation_epoch_end(self):
@@ -202,9 +220,21 @@ class ToolSelectionModule(pl.LightningModule):
             self.val_f1.compute(),
         )
 
+
+        exact_match = (
+            self.val_exact_match.compute()
+        )
+
+        self.log(
+            "val_exact_match",
+            exact_match,
+            prog_bar=True,
+        )
+
         self.val_precision.reset()
         self.val_recall.reset()
         self.val_f1.reset()
+        self.val_exact_match.reset()
 
     def on_test_epoch_end(self):
 
@@ -223,9 +253,20 @@ class ToolSelectionModule(pl.LightningModule):
             self.test_f1.compute(),
         )
 
+        exact_match = (
+            self.test_exact_match.compute()
+        )
+
+        self.log(
+            "test_exact_match",
+            exact_match,
+            prog_bar=True,
+        )
+
         self.test_precision.reset()
         self.test_recall.reset()
         self.test_f1.reset()
+        self.test_exact_match.reset()
 
     def configure_optimizers(self):
 

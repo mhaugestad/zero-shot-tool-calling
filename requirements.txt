@@ -1,6 +1,8 @@
 datasets
 torchmetrics
-dvc
 pytorch-lightning
 torch
 transformers
+dvc
+dvc[gdrive]
+dvclive

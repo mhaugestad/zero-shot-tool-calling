@@ -11,7 +11,9 @@ from src.datamodule import ToolSelectionDataModule
 from src.module import ToolSelectionModule
 from src.model import GLiClassModel
 from src.config import DataConfig, ExperimentConfig
+from dvclive.lightning import DVCLiveLogger
 
+dvclive_logger = DVCLiveLogger()
 
 def load_params() -> dict:
     with open("params.yaml") as f:
@@ -113,9 +115,11 @@ def main():
         callbacks=[
             checkpoint_callback
         ],
+        logger=dvclive_logger,
         accelerator="auto",
         devices="auto",
         log_every_n_steps=10,
+        fast_dev_run=False
     )
 
     #
@@ -124,7 +128,7 @@ def main():
 
     trainer.fit(
         module,
-        datamodule=datamodule,
+        datamodule=datamodule
     )
 
     #

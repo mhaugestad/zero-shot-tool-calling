@@ -30,13 +30,13 @@ SCENARIOS = {
 }
 
 TARGETS = {
-    "single_turn": 600,
-    "system_prompt": 450,
+    # "single_turn": 400,
+    # "system_prompt": 300,
     "clarification": 600,
-    "follow_up": 450,
-    "reference_resolution": 450,
-    "distractor": 300,
-    "missing_tool": 150,
+    "follow_up": 600,
+    "reference_resolution": 800,
+    "distractor": 1000,
+    "missing_tool": 300,
 }
 
 # TARGETS = {
@@ -66,7 +66,7 @@ indices = list(
     range(len(examples))
 )
 
-random.seed(42)
+random.seed(123)
 random.shuffle(indices)
 
 offset = 0

@@ -1,7 +1,11 @@
 from pathlib import Path
+import torch
+import json
 
 import pytorch_lightning as pl
 import yaml
+
+from safetensors.torch import save_file
 
 from pytorch_lightning.callbacks import (
     ModelCheckpoint,
@@ -96,7 +100,7 @@ def main():
 
     checkpoint_callback = (
         ModelCheckpoint(
-            dirpath="models",
+            dirpath="models/ckpt",
             filename=(
                 "best-{epoch:02d}"
                 "-{val_f1:.4f}"
@@ -120,7 +124,7 @@ def main():
         accelerator="auto",
         devices="auto",
         log_every_n_steps=10,
-        fast_dev_run=True
+        fast_dev_run=False
     )
 
     #
@@ -142,6 +146,41 @@ def main():
         ckpt_path="best",
     )
 
+    best_module = ToolSelectionModule.load_from_checkpoint(
+        checkpoint_callback.best_model_path,
+        model=model,
+    )
+
+    # Persist to HF
+    Path("model").mkdir(
+    exist_ok=True
+)
+
+    save_file(
+        best_module.model.state_dict(),
+            "models/model/pytorch_model.safetensors",)
+
+    datamodule.tokenizer.save_pretrained(
+        "models/model"
+    )
+
+    with open(
+        "models/model/config.json",
+        "w",
+    ) as f:
+
+        json.dump(
+            {
+                "pretrained_model_name":
+                    params.model.pretrained_model_name,
+                "vocab_size":
+                    len(datamodule.tokenizer),
+                "max_length":
+                    params.model.max_length,
+            },
+            f,
+            indent=2,
+        )
 
 if __name__ == "__main__":
     main()

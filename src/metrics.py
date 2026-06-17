@@ -25,9 +25,6 @@ class ExactMatch(Metric):
         labels: torch.Tensor,
         label_mask: torch.Tensor,
     ):
-        print("logits", logits.shape)
-        print("labels", labels.shape)
-        print("label_mask", label_mask.shape)
 
         predictions = (
             torch.sigmoid(logits) >= 0.5

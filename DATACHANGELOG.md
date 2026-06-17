@@ -4,7 +4,7 @@ This file tracks changes to datasets, preprocessing, labeling strategy, and trai
 
 ---
 
-## 2026-06-06 — Initial Dataset Baseline
+## 2026-06-06 — Initial Dataset Baseline [EXP 001 - EXP 002]
 
 ### Dataset
 Tool Selection Dataset v1
@@ -51,7 +51,7 @@ Tool names and descriptions are treated as input features rather than fixed clas
 
 Enables evaluation of tool-selection architectures that can generalize to previously unseen tools.
 
-## 2026-06-17 - Dataset Generation Framework
+## 2026-06-17 - Dataset Generation Framework [EXP-003]
 Added Synthetic Scenario-Based Dataset Generation
 
 Implemented a synthetic dataset generation pipeline for tool selection experiments. The pipeline transforms XLAM function-calling examples into conversational tool-selection examples using a collection of scenario generators.
@@ -76,3 +76,11 @@ In total:
 - train: 2.28k
 - dev: 285
 - test: 285
+
+
+## 2026-06-17 - Dataset Generation Framework [EXP-004]
+Added additional Synthetic Scenario-Based Dataset Generation. The previous model seemed to struggle with changes in topics and longer conversation so the new data focussed on adding more of these examples.
+
+- train 5241
+- dev 655
+- test 656

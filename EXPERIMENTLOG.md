@@ -128,3 +128,28 @@ Equivalent performance to EXP-0001 because each example currently contains a sin
 │      test_precision       │    0.9882634878158569     │
 │        test_recall        │    0.9951760768890381     │
 └───────────────────────────┴───────────────────────────┘
+
+
+
+## EXP-0003: 24a75ab [licht-byte]
+Experiment run with distilbert base uncased on a sample of 2.8k examples generated with seeds from XLAM.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│     test_exact_match      │    0.8526315689086914     │
+│          test_f1          │    0.9411764740943909     │
+│         test_loss         │    0.20633403956890106    │
+│      test_precision       │    0.9552238583564758     │
+│        test_recall        │    0.9275362491607666     │
+└───────────────────────────┴───────────────────────────┘
+
+### Observations
+
+A small set of hand-crafted evaluation scenarios was used to qualitatively assess model behavior beyond aggregate metrics.
+
+The model performed well on simple single-turn requests and was generally able to identify the correct tool when the user's intent was explicit. It also demonstrated reasonable separation between relevant and irrelevant tools.
+
+However, performance degraded when conversations contained topic shifts or distractor context. In multi-turn conversations, the model sometimes assigned elevated scores to tools associated with earlier parts of the conversation rather than focusing exclusively on the most recent user request.
+
+This suggests the model has learned strong lexical and semantic associations between queries and tools, but has not yet fully learned conversational relevance and recency. Additional training data emphasizing topic changes, distractor conversations, and reference resolution may help improve robustness in realistic multi-turn settings.

@@ -6,3 +6,4 @@ transformers
 dvc
 dvclive
 huggingface_hub
+openai

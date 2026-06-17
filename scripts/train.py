@@ -19,13 +19,14 @@ def load_params() -> dict:
     with open("params.yaml") as f:
         return yaml.safe_load(f)
 
-
 def build_dataconfig(
     params: dict,
 ) -> DataConfig:
 
     return DataConfig(
-        dataset_path="data/tool-selection/tool_selection_dataset",
+        dataset_path=params["data"][
+            "dataset_path"
+        ],
         pretrained_model_name=params["model"][
             "pretrained_model_name"
         ],
@@ -119,7 +120,7 @@ def main():
         accelerator="auto",
         devices="auto",
         log_every_n_steps=10,
-        fast_dev_run=False
+        fast_dev_run=True
     )
 
     #

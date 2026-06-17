@@ -34,3 +34,4 @@ class TrainingConfig(BaseModel):
 class ExperimentConfig(BaseModel):
     model: ModelConfig
     training: TrainingConfig
+    data: dict

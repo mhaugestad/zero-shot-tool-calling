@@ -50,3 +50,29 @@ Tool names and descriptions are treated as input features rather than fixed clas
 ## Impact
 
 Enables evaluation of tool-selection architectures that can generalize to previously unseen tools.
+
+## 2026-06-17 - Dataset Generation Framework
+Added Synthetic Scenario-Based Dataset Generation
+
+Implemented a synthetic dataset generation pipeline for tool selection experiments. The pipeline transforms XLAM function-calling examples into conversational tool-selection examples using a collection of scenario generators.
+
+Current scenarios include:
+
+- Single Turn
+- System Prompt
+- Clarification
+- Follow Up
+- Reference Resolution
+- Distractor Conversation
+- Missing Tool
+
+Generation follows a one-to-one mapping between source XLAM examples and synthetic examples to simplify provenance tracking and prevent train/test leakage.
+
+Generated examples are written incrementally to JSONL files to support resumable dataset generation and avoid data loss during long-running jobs. Each example records the scenario used for generation, enabling future evaluation and error analysis by scenario type.
+
+A separate dataset publishing step converts the generated JSONL files into a Hugging Face Dataset, creates train/dev/test splits, and uploads the resulting dataset to the Hugging Face Hub.
+
+In total:
+- train: 2.28k
+- dev: 285
+- test: 285

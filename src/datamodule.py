@@ -1,4 +1,4 @@
-from datasets import load_from_disk
+from datasets import load_dataset
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
@@ -71,7 +71,7 @@ class ToolSelectionDataModule(
         # datasets
         #
 
-        dataset = load_from_disk(
+        dataset = load_dataset(
             self.config.dataset_path
         )
 
